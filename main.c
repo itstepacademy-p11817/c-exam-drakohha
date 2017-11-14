@@ -14,7 +14,7 @@ int main() {
 	char buffer[100];
 	int index_3 = 0;
 	int index_2=0;
-	struct telefon_t {
+	struct telefon_t {    //структура смой телефонной книги
 		char name[100];
 		char se_name[100];
 		char number[20];
@@ -23,15 +23,15 @@ int main() {
 		char kv_num[10];
 	};
 
-	struct telefon_t kontact[100];
+	struct telefon_t kontact[100];  //макс количество записей в книге
 
 
 	FILE *fp;
 	fopen_s(&fp, "file.txt", "r+");
 	if (fp != NULL) {
-		printf("\n Файл с базой данных был подключен, можете начать работать!! \n");
+		printf("\n Файл с базой данных был подключен, можете начать работать!! \n");   //подключение бд из файла
 		fseek(fp, 0, SEEK_SET);
-		while (!feof(fp)) {
+		while (!feof(fp)) {   //записть всей инфы в память
 			fgets(str_buffer, 1000, fp);
 			if (str_buffer[0]==-52) {
 				index = 0;
@@ -132,7 +132,7 @@ int main() {
 			if (flag_de == 1) {
 				fopen_s(&fp, "file.txt", "w+");
 				if (fp != NULL) {
-					printf("Новая база данных создана!\n");
+					printf("Новая база данных создана!\n");   //создание новой бд ели нету другой
 				}
 				else {
 					printf("Програмная ошибка , невозможно создать файд бд!!\n");
@@ -147,13 +147,81 @@ int main() {
 
 
 	do {
-		printf("\n Меню книги :\n 1-Вывести список контактов \n 2-Поиск контактов \n 3-Добавление контактов \n 4-Вызов по номеру \n 0-Выход \n");
+		printf("\n Меню книги :\n 1-Вывести список контактов \n 2-Поиск контактов \n 3-Добавление контактов \n 4-Вызов по номеру \n 5- Выбрать(редактировать) контакт \n 0-Выход \n");
 		scanf_s("%d", &flag_menu);
 		if (flag_menu == 1) {
 			printf("\n Список контактов \n");
 			for (int i = 0; i < index; i++) {
-				printf("%s %s %s %s %s %s \n", kontact[i].name,kontact[i].se_name,kontact[i].number,kontact[i].adr_name,kontact[i].home_num,kontact[i].kv_num);
+				printf("%d - %s %s %s %s %s %s \n",i, kontact[i].name,kontact[i].se_name,kontact[i].number,kontact[i].adr_name,kontact[i].home_num,kontact[i].kv_num);
 			}
+		}
+		if (flag_menu == 2) {
+			//printf("\n Введите критерий поиска \n 1-По имени \n 2- По номеру \n 3-По адресу \n 4-поиск соседий контакта \n");
+			int flga_id = 0;
+			char buff_name[20];
+			char buff_number[15];
+			char buff_adr[20];
+			int buff_kol_sosedi;
+			char buff_adr_sosedi_name[20];
+			do {
+				printf("\n Введите критерий поиска \n 1-По имени \n 2- По номеру \n 3-По адресу \n 4-поиск соседий контакта \n 0-выход \n");
+				while (getchar() != '\n');
+				scanf_s("%d", &flga_id);
+				if (flga_id == 0) {
+					break;
+				}
+				if (flga_id == 1) {
+					printf("\n Введите искомый контакт: \n");
+					while (getchar() != '\n');
+					gets_s(buff_name, 20);
+					for (int i = 0; i < index; i++) {
+						if (strcmp(buff_name,kontact[i].name)==0) {
+							printf("%d - %s %s %s %s %s %s \n", i, kontact[i].name, kontact[i].se_name, kontact[i].number, kontact[i].adr_name, kontact[i].home_num, kontact[i].kv_num);
+						}
+					}
+				}
+				if (flga_id == 2) {
+					printf("\n Введите искомый номер: \n");
+					while (getchar() != '\n');
+					gets_s(buff_number, 20);
+					for (int i = 0; i < index; i++) {
+						if (strcmp(buff_number, kontact[i].number) == 0) {
+							printf("%d - %s %s %s %s %s %s \n", i, kontact[i].name, kontact[i].se_name, kontact[i].number, kontact[i].adr_name, kontact[i].home_num, kontact[i].kv_num);
+						}
+					}
+
+				}
+				if (flga_id == 3) {
+					printf("\n Введите искомый адрес: \n");
+					while (getchar() != '\n');
+					gets_s(buff_number, 20);
+					for (int i = 0; i < index; i++) {
+						if (strcmp(buff_adr, kontact[i].adr_name) == 0) {
+							printf("%d - %s %s %s %s %s %s \n", i, kontact[i].name, kontact[i].se_name, kontact[i].number, kontact[i].adr_name, kontact[i].home_num, kontact[i].kv_num);
+						}
+					}
+
+				}
+				if (flga_id == 4) {
+					int flag_index = 0;
+					printf("\n Введите количество соседий: \n");
+					while (getchar() != '\n');
+					scanf_s("%d", &buff_kol_sosedi);
+					printf("\n Введите искомый адрес: \n");
+					while (getchar() != '\n');
+					gets_s(buff_adr_sosedi_name, 20);
+					for (int i = 0; i < index; i++) {
+						if (flag_index >= buff_kol_sosedi) {
+							break;
+						}
+						if (strcmp(buff_adr_sosedi_name, kontact[i].adr_name) == 0) {
+							flag_index++;
+							printf("%d - %s %s %s %s %s %s \n", i, kontact[i].name, kontact[i].se_name, kontact[i].number, kontact[i].adr_name, kontact[i].home_num, kontact[i].kv_num);
+						}
+					}
+
+				}
+			} while (flga_id != 0);
 		}
 		if (flag_menu == 3) {
 			
@@ -171,6 +239,33 @@ int main() {
 			printf("\n Введите номер квартиры  \n");
 			gets_s(kontact[index].kv_num, 10);
 			index++;
+		}
+
+		if (flag_menu == 4) {
+			char coll_num[20];
+			char cool_name[20];
+			int index_coll_name=101;
+			printf("\n Наберите номер для вызова!! \n");
+			while (getchar() != '\n');
+			gets_s(coll_num, 20);
+			for (int i = 0; i < index; i++) {
+				if (strcmp(coll_num,kontact[i].number) == 0) {
+					index_coll_name = i;
+					printf("Calling %s %s \n", kontact[index_coll_name].name, kontact[index_coll_name].se_name);
+					system ("Pause");
+					break;
+				}
+			}
+			if (index_coll_name == 101) {
+				printf("\n Идет звонок  неопределеному контакту \n ");
+				system("Pause");
+			}
+			
+		}
+		if (flag_menu == 5) {
+			int tek_index = 0;
+			printf("\n Выберите контакт : \n");
+			scanf_s("%d", &tek_index);
 		}
 		
 
